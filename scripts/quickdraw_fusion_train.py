@@ -1,0 +1,15 @@
+import os.path
+import sys
+import warnings
+
+_project_folder_ = os.path.realpath(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+if _project_folder_ not in sys.path:
+    sys.path.insert(0, _project_folder_)
+
+from scripts.base_train import SketchFusionTrain
+
+if __name__ == '__main__':
+    with SketchFusionTrain() as app:
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            app.run()
