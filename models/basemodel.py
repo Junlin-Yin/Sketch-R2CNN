@@ -113,7 +113,7 @@ class BaseModel(object):
         if net_names is None or len(net_names) == 0:
             # Try to load every subnet
             for net, name in zip(self._nets, self._net_names):
-                net_path = path_prefix + name + '.pth'
+                net_path = path_prefix + '_' + name + '.pth'
                 if os.path.exists(net_path):
                     net.load_state_dict(torch.load(net_path), strict=strict)
                     res.append(net_path)

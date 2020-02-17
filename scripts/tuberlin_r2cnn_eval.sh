@@ -1,3 +1,4 @@
+cd "/content/drive/My Drive/Sketch-R2CNN/"
 #CL_MODEL="vgg16"
 #CL_MODEL="densenet161"
 #CL_MODEL="resnext101"
@@ -8,33 +9,23 @@ CL_MODEL="resnet50"
 
 CL_INTENSITY_CHANNELS=8
 
-CL_RUNNAME="09-28_00-15-tuberlin-rnn-sketchanet-500epoch"
+CL_RUNNAME="20-02-15_15-35-tuberlin-rnn-8c-resnet50-1epoch"
 CL_CKPT_PREFIX="tuberlin_sketchanet_fold{}_iter_epoch_{}"
 
 CL_DATASET="tuberlin"
-CL_DATASET_ROOT="/media/hdd/craiglee/Data/TUBerlin/TUBerlin.pkl"
-CL_LOG_DIR="/media/hdd/craiglee/Data/DeepLearningSketchModeling/NeuralLineCVPR19/"
+CL_DATASET_ROOT="data/TUBerlin/TUBerlin.pkl"
+CL_LOG_DIR="logs/"
 
 CL_NOTE="Evaluation; TUBerlin dataset; Pretrained Conv on Quickdraw."
 
 mkdir "${CL_LOG_DIR}${CL_RUNNAME}_eval"
 
-sudo nvidia-docker run --rm \
-    --network=host \
-    --shm-size 8G \
-    -v /:/host \
-    -v /tmp/torch_extensions:/tmp/torch_extensions \
-    -v /tmp/torch_models:/root/.torch \
-    -w "/host$PWD" \
-    -e PYTHONUNBUFFERED=x \
-    -e CUDA_CACHE_PATH=/host/tmp/cuda-cache \
-    py35pytorch101 \
-    python tuberlin_r2cnn_eval.py \
-        --checkpoint "/host${CL_LOG_DIR}${CL_RUNNAME}/${CL_CKPT_PREFIX}" \
+/opt/conda/bin/python scripts/tuberlin_r2cnn_eval.py \
+        --checkpoint "${CL_LOG_DIR}${CL_RUNNAME}/${CL_CKPT_PREFIX}" \
         --dataset_fn ${CL_DATASET} \
-        --dataset_root "/host${CL_DATASET_ROOT}" \
+        --dataset_root "${CL_DATASET_ROOT}" \
         --intensity_channels ${CL_INTENSITY_CHANNELS} \
-        --log_dir "/host${CL_LOG_DIR}${CL_RUNNAME}_eval" \
+        --log_dir "${CL_LOG_DIR}${CL_RUNNAME}_eval" \
         --model_fn "${CL_MODEL}" \
         --note "${CL_NOTE}" \
     2>&1 | tee -a "${CL_LOG_DIR}${CL_RUNNAME}_eval/eval.log"
