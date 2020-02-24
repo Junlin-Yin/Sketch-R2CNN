@@ -34,8 +34,8 @@ DATASETS = {'tuberlin': TUBerlinDataset, 'quickdraw': QuickDrawDataset}
 
 FUSION_MODELS = {'early': SketchEarlyFusion, 'late': SketchLateFusion}
 
-# DRAWING_RATIOS = [1, ]
-DRAWING_RATIOS = [0.25, 0.5, 0.75, 1]
+DRAWING_RATIOS = [1, ]
+# DRAWING_RATIOS = [0.25, 0.5, 0.75, 1]
 
 
 def write_row(file, item_list):
@@ -388,10 +388,10 @@ class SketchR2CNNEval(BaseEval):
 
         _, predicts = torch.max(logits, 1)
 
-        # attention_cpu = attention.cpu().numpy()
-        # pred_category = predicts.cpu().numpy()[0]
-        # if drawing_ratio == 1:
-        #    self.collect_stats.append((index, pred_category, batch_data['category'][0], attention_cpu))
+        attention_cpu = attention.cpu().numpy()
+        pred_category = predicts.cpu().numpy()[0]
+        if drawing_ratio == 1:
+           self.collect_stats.append((index, pred_category, batch_data['category'][0], attention_cpu))
 
         return logits, category, duration
 

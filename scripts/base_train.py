@@ -50,11 +50,12 @@ def train_data_collate(batch):
     intensities_list = list()
     category_list = list()
     for item in batch:
-        points3 = item['points3']
+        # one item is one case of sketch
+        points3 = item['points3']   # (N, 3)
         points3_length = len(points3)
         # Padding
         points3_padded = np.zeros((max_length, 3), np.float32)
-        points3_padded[:, 2] = np.ones((max_length,), np.float32)
+        points3_padded[:, 2] = np.ones((max_length,), np.float32)   # pad's pen state is 1 according to the paper
         points3_padded[0:points3_length, :] = points3
         points3_padded_list.append(points3_padded)
 
@@ -79,6 +80,7 @@ def train_data_collate(batch):
     }
 
     # Descending sort according to points length
+    # Why sorting is needed: https://www.cnblogs.com/sbj123456789/p/9834018.html
     sort_indices = np.argsort(-np.array(length_list))
     batch_collate = dict()
     for k, v in batch_padded.items():
@@ -101,6 +103,7 @@ class BaseTrain(object):
         self.device = torch.device('cuda:{}'.format(self.config['gpu']) if torch.cuda.is_available() else 'cpu')
         print('[*] Using device: {}'.format(self.device))
 
+    # python context manager: https://blog.csdn.net/songhao8080/article/details/103669903
     def __enter__(self):
         return self
 
@@ -326,6 +329,7 @@ class BaseTrain(object):
 
                 running_corrects = 0
                 num_samples = 0
+                # tqdm: https://blog.csdn.net/zkp_987/article/details/81748098
                 pbar = tqdm.tqdm(total=len(data_loaders[mode]))
                 for bid, data_batch in enumerate(data_loaders[mode]):
                     self.step_counters[mode] += 1

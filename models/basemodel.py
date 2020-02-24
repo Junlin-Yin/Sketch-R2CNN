@@ -62,6 +62,8 @@ class BaseModel(object):
 
             named_params = self.params(True, named=True, add_prefix=False)
             for param_name, param_data in named_params:
+                # search param_name in excludes using string op 'in'
+                # all parameter data with their names including 'bias' will be put into decay_params
                 use_decay = True
                 for kw in excludes:
                     if kw in param_name:
@@ -132,6 +134,8 @@ class BaseModel(object):
     def train_mode(self):
         for net, train_flag in zip(self._nets, self._train_flags):
             if train_flag:
+                # .train() and .eval() are different only when Dropout or BatchNorm are 
+                # included in the network.
                 net.train()
             else:
                 net.eval()
