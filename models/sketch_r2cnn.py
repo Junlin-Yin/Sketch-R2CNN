@@ -127,7 +127,6 @@ class SketchR2CNN(BaseModel):
 
         self.img_size = img_size
         self.thickness = thickness
-        # Should be 1 or 3
         self.intensity_channels = intensity_channels
         self.eps = 1e-4
         self.device = device
@@ -155,6 +154,8 @@ class SketchR2CNN(BaseModel):
 
     def __call__(self, points, points_offset, lengths):
         # Use RNN to compute point-wise attention
+        # points:       [B, N, 3]
+        # intensities:  [B, N, F]
         intensities, _ = self.rnn(points_offset, lengths)
 
         # Rasterize and forward through CNN
